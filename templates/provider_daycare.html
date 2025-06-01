@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Helphive</title>
+  <title>HelpHive - Daycare</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='provider.css') }}"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -99,25 +99,33 @@
   </nav>
 </header>
 
-<h2 class="section-title">SERVICE PROVIDERS</h2>
+<h2 class="section-title">Trusted Daycare Providers</h2>
 
 {% for provider in providers %}
-<div class="service-card">
-  <div class="image-container">
-    <img src="{{ url_for('static', filename=provider.photo_url) }}" alt="{{ provider.name }}" />
-  </div>
-  <div class="info-container">
-    <h3>{{ provider.name }}</h3>
-    <p><strong>Bio:</strong> {{ provider.bio }}</p>
-    <p><strong>Email:</strong> {{ provider.email }}</p>
-    <p><strong>Phone:</strong> {{ provider.phone }}</p>
-  </div>
-  <div class="action-container">
+  {% if provider.category.lower() == 'daycare' %}
+    <div class="service-card">
+      <div class="image-container">
+        <img src="{{ url_for('static', filename=provider.photo_url) }}" alt="{{ provider.name }}">
+      </div>
+      <div class="info-container">
+        <h3>{{ provider.name }}</h3>
+        <p><strong>Bio:</strong> {{ provider.bio }}</p>
+        <p><strong>Email:</strong> {{ provider.email }}</p>
+        <p><strong>Phone:</strong> {{ provider.phone }}</p>
+      </div>
+      <div class="action-container">
+        <a href="{{ url_for('book', provider_id=provider.id) }}">
     <button class="book-btn">BOOK NOW</button>
-    <p class="rating">Rating: ⭐ 4.5</p>
-  </div>
-</div>
+</a>
+        <p class="rating">Rating: ⭐ 4.7</p>
+      </div>
+    </div>
+  {% endif %}
 {% endfor %}
+
+{% if not providers %}
+  <p style="text-align:center;">No daycare providers available at the moment.</p>
+{% endif %}
 
 </body>
 </html>

@@ -99,12 +99,12 @@
   </nav>
 </header>
 
-<h2 class="section-title">SERVICE PROVIDERS</h2>
+<h2 class="section-title">Trusted Electricians</h2>
 
 {% for provider in providers %}
 <div class="service-card">
   <div class="image-container">
-    <img src="{{ url_for('static', filename=provider.photo_url) }}" alt="{{ provider.name }}" />
+    <img src="{{ url_for('static', filename=provider.photo_url) }}" alt="{{ provider.name }}">
   </div>
   <div class="info-container">
     <h3>{{ provider.name }}</h3>
@@ -118,6 +118,8 @@
   </div>
 </div>
 {% endfor %}
-
+{% if not providers %}
+            <p style="text-align:center;">No daycare providers available at the moment.</p>
+        {% endif %}
 </body>
 </html>

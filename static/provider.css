@@ -27,13 +27,14 @@ color: black;
 font-size: 16px;
 }
 .login-btn {
-background-color: #377dff;
-color: white;
-padding: 8px 16px;
-border: none;
-border-radius: 20px;
-font-weight: bold;
-cursor: pointer;
+  background-color: #377dff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
 }
 .section-title {
 text-align: center;

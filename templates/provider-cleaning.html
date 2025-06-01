@@ -12,23 +12,29 @@
       font-family: Arial, sans-serif;
       background-color: #ffffff;
     }
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 40px;
-      background-color: white;
-      border-bottom: 1px solid #eee;
-    }
-    .logo {
-      font-size: 28px;
-      font-weight: bold;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
+   .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  flex: 1;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: flex-end;
+  flex: 1;
+}
+
     .nav-links a {
       text-decoration: none;
       color: black;
@@ -99,25 +105,32 @@
   </nav>
 </header>
 
-<h2 class="section-title">SERVICE PROVIDERS</h2>
+<h2 class="section-title">Trusted Home Cleaners</h2>
 
 {% for provider in providers %}
-<div class="service-card">
-  <div class="image-container">
-    <img src="{{ url_for('static', filename=provider.photo_url) }}" alt="{{ provider.name }}" />
-  </div>
-  <div class="info-container">
-    <h3>{{ provider.name }}</h3>
-    <p><strong>Bio:</strong> {{ provider.bio }}</p>
-    <p><strong>Email:</strong> {{ provider.email }}</p>
-    <p><strong>Phone:</strong> {{ provider.phone }}</p>
-  </div>
-  <div class="action-container">
-    <button class="book-btn">BOOK NOW</button>
-    <p class="rating">Rating: ⭐ 4.5</p>
-  </div>
-</div>
+  {% if provider.category.lower() == 'cleaning' %}
+    <div class="service-card">
+      <div class="image-container">
+        <img src="{{ url_for('static', filename=provider.photo_url) }}" alt="{{ provider.name }}">
+      </div>
+      <div class="info-container">
+        <h3>{{ provider.name }}</h3>
+        <p><strong>Bio:</strong> {{ provider.bio }}</p>
+        <p><strong>Email:</strong> {{ provider.email }}</p>
+        <p><strong>Phone:</strong> {{ provider.phone }}</p>
+      </div>
+      <div class="action-container">
+       <a href="{{ url_for('book', provider_id=provider.id) }}">
+        <button class="book-btn">BOOK NOW</button>
+        </a>
+        <p class="rating">Rating: ⭐ 4.5</p>
+      </div>
+    </div>
+  {% endif %}
 {% endfor %}
+{% if not providers %}
+            <p style="text-align:center;">No daycare providers available at the moment.</p>
+        {% endif %}
 
 </body>
 </html>
