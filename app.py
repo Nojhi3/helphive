@@ -206,7 +206,12 @@ def book(provider_id):
 
         cursor.close()
         conn.close()
-        return "Booking confirmed!"
+        return '''
+                <script>
+                alert("Booking confirmed!");
+                window.location.href = "/";
+                </script>
+                '''
 
     cursor.close()
     conn.close()
