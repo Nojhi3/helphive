@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import MySQLdb
 import MySQLdb.cursors
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/images'
@@ -10,7 +11,7 @@ def get_db_connection():
     return MySQLdb.connect(
         host="localhost",
         user="root",
-        passwd="mysql123",
+        passwd="1234",
         db="helphive",
         cursorclass=MySQLdb.cursors.DictCursor
     )
@@ -147,7 +148,7 @@ def book(provider_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM providers WHERE id = %s", (provider_id,))
+    cursor.execute("SELECT * FROM providers WHERE provider_id = %s", (provider_id,))
     provider = cursor.fetchone()
 
     if not provider:
@@ -176,6 +177,7 @@ def book(provider_id):
     conn = get_db_connection()
     cursor = conn.cursor(MySQLdb.cursors.DictCursor)
 
+    # Fetch provider details
     cursor.execute("SELECT * FROM providers WHERE provider_id = %s", (provider_id,))
     provider = cursor.fetchone()
 
@@ -184,24 +186,31 @@ def book(provider_id):
         conn.close()
         return "Provider not found", 404
 
+    # ✅ Get service_name and description using service_id
+    cursor.execute("SELECT service_name, description FROM services WHERE service_name = %s", (provider['category'],))
+    service = cursor.fetchone()
+    service_name = service['service_name'] if service else 'Unknown'
+    service_description = service['description'] if service else 'No description available.'
+
     if request.method == 'POST':
-        name = request.form['name']
+        customer_name = request.form['customer_name']
         date = request.form['date']
         time = request.form['time']
+        scheduled_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
 
-        cursor.execute("INSERT INTO bookings (provider_id, user_name, date, time) VALUES (%s, %s, %s, %s)",
-                       (provider_id, name, date, time))
+        cursor.execute("""
+            INSERT INTO bookings (customer_name, provider_name, service_name, scheduled_time)
+            VALUES (%s, %s, %s, %s)
+        """, (customer_name, provider['name'], service_name, scheduled_time))
         conn.commit()
 
         cursor.close()
         conn.close()
-        return f"Thank you {name}, your appointment with {provider['name']} is booked for {date} at {time}."
+        return "Booking confirmed!"
 
     cursor.close()
     conn.close()
-    return render_template('book.html', provider=provider)
-
-
+    return render_template('book.html', provider=provider, service_name=service_name, service_description=service_description)
 
 
 if __name__ == '__main__':
